@@ -8,7 +8,8 @@ Dynamic UV projector that uses a camera
 
 npm t
 
-# [![NPM](https://nodei.co/npm/threejs-uv-projection-factory.png)](https://www.npmjs.com/package/threejs-uv-projection-factory)
+<!-- [![NPM](https://nodei.co/npm/threejs-uv-projection-factory.png)](https://www.npmjs.com/package/threejs-uv-projection-factory) -->
+
 [NPM](https://www.npmjs.com/package/threejs-uv-projection-factory)
 
 ## License
