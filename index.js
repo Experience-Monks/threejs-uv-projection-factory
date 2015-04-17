@@ -1,4 +1,4 @@
-var THREE = require('three');
+// THREE = require('three');
 
 var UVProjector = require('./UVProjector.js');
 
