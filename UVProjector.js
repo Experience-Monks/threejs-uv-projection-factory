@@ -130,19 +130,19 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 			var y = positionarray[index * 3 + 1];
 			var z = positionarray[index * 3 + 2];
 
-			newVert.set(x, y, z, 1.0);
-			newVert.applyMatrix4(finalMatrix);
+			//newVert.set(x, y, z, 1.0);
+			//newVert.applyMatrix4(finalMatrix);
 
-			/*	newVert.set(
-			 e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] * 1.0,
-			 e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] * 1.0,
-			 e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] * 1.0,
-			 e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] * 1.0
-			);*/
+			//newVert.x /= newVert.w;
+			//newVert.y /= newVert.w;
+			//newVert.z /= newVert.w;
+			
+			var newX = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] * 1.0;
+			var newY = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] * 1.0;
+			var newZ = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] * 1.0;
+			var newW = e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] * 1.0;
 
-			newVert.x /= newVert.w;
-			newVert.y /= newVert.w;
-			newVert.z /= newVert.w;
+			newVert.set(newX / newW, newY / newW, newZ / newW, newW);
 
 			// Filter vertices
 			if ( 
