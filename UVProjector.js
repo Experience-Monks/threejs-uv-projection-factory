@@ -1,4 +1,4 @@
-var THREE = require('three');
+// THREE = require('three');
 
 /**
  * Constructor for UVProjector
