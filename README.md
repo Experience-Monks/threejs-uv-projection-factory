@@ -1,8 +1,8 @@
-# threejs-camera-uv-projector
+# threejs-uv-projection-factory
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
-Dynamic UV projector that uses a camera
+A threejs UV projector system. Great for dynamic decal placement.
 
 ## Usage
 
