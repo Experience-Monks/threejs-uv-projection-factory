@@ -57,22 +57,25 @@ UVProjectorFactory.prototype.resetUVs = function(mesh){
  */
 UVProjectorFactory.prototype.addMesh = function(mesh){
 
-	// Add decalmask attribute to mesh (if it doesn't exist)
-	if ( mesh.geometry.getAttribute('decalmask') === undefined)
+	if (this.meshes.indexOf(mesh) === -1)
 	{
-		var num_vertices = mesh.geometry.attributes.position.array.length / 3;
-		var decalmask = new Float32Array(num_vertices);
-
-		for ( var i = 0; i < num_vertices; i++ )
+		// Add decalmask attribute to mesh (if it doesn't exist)
+		if ( mesh.geometry.getAttribute('decalmask') === undefined)
 		{
-			decalmask[i] = 0;
+			var num_vertices = mesh.geometry.attributes.position.array.length / 3;
+			var decalmask = new Float32Array(num_vertices);
+
+			for ( var i = 0; i < num_vertices; i++ )
+			{
+				decalmask[i] = 0;
+			}
+
+			mesh.geometry.addAttribute( 'decalmask', new THREE.BufferAttribute(decalmask, 1) );
 		}
 
-		mesh.geometry.addAttribute( 'decalmask', new THREE.BufferAttribute(decalmask, 1) );
+		// then add mesh
+		this.meshes.push(mesh);
 	}
-
-	// then add mesh
-	this.meshes.push(mesh);
 };
 
 /**

@@ -23,9 +23,10 @@
     "threejs-texture-checkerboard": "^1.0.0"
   },
   "scripts": {
-    "test": "npm run test2",
+    "test": "npm run test3",
     "test1": "beefy test.js --live --open",
-    "test2": "beefy test2.js --live --open"
+    "test2": "beefy test2.js --live --open",
+    "test3": "beefy test3.js --live --open"
   },
   "keywords": [
     "threejs",
