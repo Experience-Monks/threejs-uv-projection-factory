@@ -1,5 +1,5 @@
 {
-  "name": "threejs-camera-uv-projector",
+  "name": "threejs-uv-projection-factory",
   "version": "1.0.0",
   "description": "Dynamic UV projector that uses a camera",
   "main": "index.js",
@@ -35,10 +35,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/eternallite/threejs-camera-uv-projector.git"
+    "url": "git://github.com/Jam3/threejs-uv-projection-factory.git"
   },
-  "homepage": "https://github.com/eternallite/threejs-camera-uv-projector",
+  "homepage": "https://github.com/Jam3/threejs-uv-projection-factory",
   "bugs": {
-    "url": "https://github.com/eternallite/threejs-camera-uv-projector/issues"
+    "url": "https://github.com/Jam3/threejs-uv-projection-factory/issues"
   }
 }
