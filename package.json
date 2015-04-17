@@ -1,0 +1,44 @@
+{
+  "name": "threejs-camera-uv-projector",
+  "version": "1.0.0",
+  "description": "Dynamic UV projector that uses a camera",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "David Tran",
+    "email": "davidt@jam3.com",
+    "url": "https://github.com/eternallite"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "dat-gui": "^0.5.0",
+    "loadandrunscripts": "^1.0.0",
+    "stats-js": "^1.0.0-alpha1",
+    "three": "^0.70.0",
+    "three-effectcomposer": "0.0.1",
+    "threejs-camera-controller-first-person-desktop": "^4.2.0",
+    "threejs-helper-material-assigner": "^1.0.3",
+    "threejs-jit-geometry-scene-loader": "^9.2.1",
+    "threejs-managed-view": "^4.0.1",
+    "threejs-texture-checkerboard": "^1.0.0"
+  },
+  "scripts": {
+    "test": "npm run test2",
+    "test1": "beefy test.js --live --open",
+    "test2": "beefy test2.js --live --open"
+  },
+  "keywords": [
+    "threejs",
+    "camera",
+    "uv",
+    "projector"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/eternallite/threejs-camera-uv-projector.git"
+  },
+  "homepage": "https://github.com/eternallite/threejs-camera-uv-projector",
+  "bugs": {
+    "url": "https://github.com/eternallite/threejs-camera-uv-projector/issues"
+  }
+}
