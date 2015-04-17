@@ -6,8 +6,11 @@ Dynamic UV projector that uses a camera
 
 ## Usage
 
-[![NPM](https://nodei.co/npm/threejs-camera-uv-projector.png)](https://www.npmjs.com/package/threejs-camera-uv-projector)
+npm t
+
+# [![NPM](https://nodei.co/npm/threejs-uv-projection-factory.png)](https://www.npmjs.com/package/threejs-uv-projection-factory)
+[NPM](https://www.npmjs.com/package/threejs-uv-projection-factory)
 
 ## License
 
-MIT, see [LICENSE.md](http://github.com/eternallite/threejs-camera-uv-projector/blob/master/LICENSE.md) for details.
+MIT, see [LICENSE.md](http://github.com/Jam3/threejs-uv-projection-factory/blob/master/LICENSE.md) for details.
