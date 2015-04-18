@@ -16,13 +16,15 @@ function UVProjector(options)
 	var far = options.far || 3.0;
 
 	// Top left 0, 0 and bottom right 1, 1
-	this.left = options.left || 0.0;
-	this.right = options.right || 1.0;
-	this.bottom = options.bottom || 1.0;
-	this.top = options.top || 0.0;
+	this.left = (options.left !== undefined) ? options.left : 0.0;
+	this.right = (options.right !== undefined) ? options.right : 1.0;
+	this.bottom = (options.bottom !== undefined) ? options.bottom : 1.0;
+	this.top = (options.top !== undefined) ? options.top : 0.0;
 
 	this.width = this.right - this.left;
 	this.height = this.bottom - this.top;
+
+	this.flipX = options.flipX;
 
 	aspect *= this.width / this.height;
 
@@ -111,7 +113,7 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 	{
 		var positionarray = mesh.geometry.attributes.position.array;
 		var uvarray = mesh.geometry.attributes.uv.array;
-		var decalmaskArray = mesh.geometry.attributes.decalmask.array;
+		var decalsMaskArray = mesh.geometry.attributes.decalsMask.array;
 
 		var position_floats = positionarray.length;
 		var vertices = position_floats / 3;
@@ -121,6 +123,12 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 
 		var newVert = new THREE.Vector4(0.0, 0.0, 0.0, 1.0); 
 		var e = finalMatrix.elements;
+
+		var width = this.width;
+		var height = this.height;
+		var left = this.left;
+		var top = this.top;
+		var flipX = this.flipX;
 
 		for (var index = 0; 
 			 index < vertices; 
@@ -154,16 +162,18 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 				var u = newVert.x * 0.5 + 0.5;
 				var v = 1 - (newVert.y * 0.5 + 0.5);
 
-				u = u * this.width + this.left;
-				v = 1 - (v * this.height + this.top);
+				u = u * width + left;
+				v = 1 - (v * height + top);
+
+				if (flipX) u = 1-u;
 
 				uvarray[index * 2] = u;
 				uvarray[index * 2 + 1] = v;
 
-				decalmaskArray[index] = 1.0;
+				decalsMaskArray[index] = 1.0;
 			}
 		}
-		mesh.geometry.attributes.decalmask.needsUpdate = true;		
+		mesh.geometry.attributes.decalsMask.needsUpdate = true;		
 	}
 };
 

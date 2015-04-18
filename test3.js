@@ -104,42 +104,42 @@ var texture = THREE.ImageUtils.loadTexture(texturesPath + "decal.png", undefined
 
 	materials.notFound = new THREE.ShaderMaterial({
 		attributes:	{ 
-			decalmask: { type: 'f', value: null }
+			decalsMask: { type: 'f', value: null }
 		},
 		uniforms: {
-			decaltexture : { type: "t", value: texture }
+			decalsMaskTexture : { type: "t", value: texture }
 		},
 		vertexShader: 
 		`
-			attribute float decalmask;
+			attribute float decalsMask;
 			
 			varying vec2 vUv;
-			varying float vDecalMask;
+			varying float vDecalsMask;
 
 			void main()
 			{
 				vUv = uv;
-				vDecalMask = decalmask;
+				vDecalsMask = decalsMask;
 
 				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0 );
 			}
 		`,
 		fragmentShader: 
 		`		
-			uniform sampler2D decaltexture;	
+			uniform sampler2D decalsMaskTexture;	
 
 			varying vec2 vUv;
-			varying float vDecalMask;
+			varying float vDecalsMask;
 
 			void main() 
 			{
-				if (vDecalMask < 0.999)
+				if (vDecalsMask < 0.999)
 				{
-					gl_FragColor = texture2D(decaltexture, vec2(0.0, 0.0));
+					gl_FragColor = texture2D(decalsMaskTexture, vec2(0.0, 0.0));
 				}
 				else
 				{
-					gl_FragColor = texture2D(decaltexture, vUv);	
+					gl_FragColor = texture2D(decalsMaskTexture, vUv);	
 				}
 			}		
 		`

@@ -42,12 +42,12 @@ UVProjectorFactory.prototype.resetUVs = function(mesh){
 		mesh.geometry.attributes.uv.needsUpdate = true;
 
 		// Also reset decal mask
-		var numDecalMask = mesh.geometry.attributes.decalmask.array.length;
+		var numDecalMask = mesh.geometry.attributes.decalsMask.array.length;
 		for (var k = 0; k < numDecalMask ; k++)
 		{
-			mesh.geometry.attributes.decalmask.array[k] = 0;			
+			mesh.geometry.attributes.decalsMask.array[k] = 0;			
 		}
-		mesh.geometry.attributes.decalmask.needsUpdate = true;
+		mesh.geometry.attributes.decalsMask.needsUpdate = true;
 	}
 };
 
@@ -59,18 +59,18 @@ UVProjectorFactory.prototype.addMesh = function(mesh){
 
 	if (this.meshes.indexOf(mesh) === -1)
 	{
-		// Add decalmask attribute to mesh (if it doesn't exist)
-		if ( mesh.geometry.getAttribute('decalmask') === undefined)
+		// Add decalsMask attribute to mesh (if it doesn't exist)
+		if ( mesh.geometry.getAttribute('decalsMask') === undefined)
 		{
 			var num_vertices = mesh.geometry.attributes.position.array.length / 3;
-			var decalmask = new Float32Array(num_vertices);
+			var decalsMask = new Float32Array(num_vertices);
 
 			for ( var i = 0; i < num_vertices; i++ )
 			{
-				decalmask[i] = 0;
+				decalsMask[i] = 0;
 			}
 
-			mesh.geometry.addAttribute( 'decalmask', new THREE.BufferAttribute(decalmask, 1) );
+			mesh.geometry.addAttribute( 'decalsMask', new THREE.BufferAttribute(decalsMask, 1) );
 		}
 
 		// then add mesh
