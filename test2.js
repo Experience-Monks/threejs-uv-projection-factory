@@ -1,4 +1,4 @@
-THREE = require('three');
+var THREE = require('three');
 
 var materialMatch = require('threejs-helper-material-assigner');
 var View = require('threejs-managed-view').View;

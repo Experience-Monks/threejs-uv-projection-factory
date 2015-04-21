@@ -1,11 +1,9 @@
-// THREE = require('three');
-
 var UVProjector = require('./UVProjector.js');
 
 /**
-* Constructor for UVProjectorFactory
-* @param {THREE.Scene} scene
-*/
+ * Constructor for UVProjectorFactory
+ * @param {THREE.Scene} scene
+ */
 function UVProjectorFactory(scene)
 {
 	this.meshes = [];
@@ -14,9 +12,9 @@ function UVProjectorFactory(scene)
 }
 
 /**
-* (Internal) Reset UV coordinates for all meshes to (0, 0)
-* @param {THREE.Mesh} mesh 
-*/
+ * (Internal) Reset UV coordinates for all meshes to (0, 0)
+ * @param {THREE.Mesh} mesh
+ */
 UVProjectorFactory.prototype.resetUVs = function(mesh){
 
 	if (mesh.geometry.faceVertexUvs !== undefined)
@@ -26,10 +24,10 @@ UVProjectorFactory.prototype.resetUVs = function(mesh){
 		for (var j = 0; j < numFaces; j++)
 		{
 			mesh.geometry.faceVertexUvs[0][j] = [
-			new THREE.Vector2(0, 0),
-			new THREE.Vector2(0, 0),
-			new THREE.Vector2(0, 0)
-			];	
+				new THREE.Vector2(0, 0),
+				new THREE.Vector2(0, 0),
+				new THREE.Vector2(0, 0)
+			];
 		}
 	}
 	else if (mesh.geometry.attributes.uv !== undefined)
@@ -37,7 +35,7 @@ UVProjectorFactory.prototype.resetUVs = function(mesh){
 		var numUVs = mesh.geometry.attributes.uv.array.length;
 		for (var i = 0; i < numUVs ; i++)
 		{
-			mesh.geometry.attributes.uv.array[i] = 0.0;			
+			mesh.geometry.attributes.uv.array[i] = 0.0;
 		}
 		mesh.geometry.attributes.uv.needsUpdate = true;
 
@@ -45,7 +43,7 @@ UVProjectorFactory.prototype.resetUVs = function(mesh){
 		var numDecalMask = mesh.geometry.attributes.decalsMask.array.length;
 		for (var k = 0; k < numDecalMask ; k++)
 		{
-			mesh.geometry.attributes.decalsMask.array[k] = 0;			
+			mesh.geometry.attributes.decalsMask.array[k] = 0;
 		}
 		mesh.geometry.attributes.decalsMask.needsUpdate = true;
 	}
@@ -62,6 +60,8 @@ UVProjectorFactory.prototype.addMesh = function(mesh){
 		// Add decalsMask attribute to mesh (if it doesn't exist)
 		if ( mesh.geometry.getAttribute('decalsMask') === undefined)
 		{
+			mesh.decalsDirty = true;
+
 			var num_vertices = mesh.geometry.attributes.position.array.length / 3;
 			var decalsMask = new Float32Array(num_vertices);
 
@@ -87,7 +87,7 @@ UVProjectorFactory.prototype.removeMesh = function(mesh){
 	var index = this.meshes.indexOf(mesh);
 	if (index > -1)
 	{
-		this.meshes.splice(index, 1);	
+		this.meshes.splice(index, 1);
 	}
 };
 
@@ -99,9 +99,11 @@ UVProjectorFactory.prototype.createProjector = function(options){
 
 	var uvprojector = new UVProjector(options);
 	this.uvprojectors.push(uvprojector);
-	
+
 	this.scene.add(uvprojector);
-	this.scene.add(uvprojector.debugView);
+
+	if (options.debug)
+		this.scene.add(uvprojector.debugView);
 
 	return uvprojector;
 };
@@ -126,16 +128,32 @@ UVProjectorFactory.prototype.destroyProjector = function(uvprojector){
  */
 UVProjectorFactory.prototype.update = function(){
 
+	/*var anyProjectorsChanged = false;
+
+	for (var j = 0; j < this.uvprojectors.length; j++) {
+		anyProjectorsChanged = this.uvprojectors[j].changed() || anyProjectorsChanged;
+	}*/
+
 	// Reset all UVs for all meshes before updating
 	for (var i = 0; i < this.meshes.length; i++)
 	{
-		this.resetUVs(this.meshes[i]);
+		if (this.meshes[i].decalsDirty)
+		{
+			this.resetUVs(this.meshes[i]);
+		}
 	}
 
 	// Update each UV projector (onto all meshes)
 	for (var j = 0; j < this.uvprojectors.length; j++)
 	{
 		this.uvprojectors[j].updateProjector(this.meshes);
+	}
+
+	// Set Decals to no longer dirty after running through all UV projectors
+	// so all projectors have a chance to project on dirtied meshes (before resetting flag)
+	for (var j = 0; j < this.meshes.length; j++)
+	{
+		this.meshes[j].decalsDirty = false;
 	}
 };
 

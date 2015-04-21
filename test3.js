@@ -1,4 +1,4 @@
-THREE = require('three');
+var THREE = require('three');
 
 var materialMatch = require('threejs-helper-material-assigner');
 var View = require('threejs-managed-view').View;
@@ -57,7 +57,6 @@ function addMeshesToFactory()
 {
 	var children = crawlForMeshes();
 	children.forEach(function(mesh) {
-		materialMatch(mesh, materials); 
 		factory.addMesh(mesh);
 	});
 }
@@ -84,8 +83,8 @@ function onComplete() {
 		fps.update();
 
 		step+=0.04;
-		uvprojector2.position.x =  1*Math.cos(step) + 3;
-		//uvprojector2.position.y =  1*Math.abs(Math.sin(step));
+		uvprojector2.position.x =  Math.cos(step) + 3;
+		//uvprojector2.position.y =  Math.abs(Math.sin(step));
 
 		//view.camera.position.copy(uvprojector2.position);
 		//view.camera.lookAt(new THREE.Vector3(0,0,0))	
@@ -145,7 +144,7 @@ var texture = THREE.ImageUtils.loadTexture(texturesPath + "decal.png", undefined
 		`
 	});
 
-	materials.groundPlane = materials.notFound; 
+	materials.groundPlane = materials.notFound;
 	materials.ball = materials.notFound; 
 	materials.box = materials.notFound; 
 	materials.pedestal = materials.notFound; 

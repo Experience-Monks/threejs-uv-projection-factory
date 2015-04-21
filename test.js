@@ -1,4 +1,4 @@
-THREE = require('three');
+var THREE = require('three');
 
 var dat = require('dat-gui');
 var Stats = require('stats-js');

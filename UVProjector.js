@@ -1,5 +1,3 @@
-// THREE = require('three');
-
 /**
  * Constructor for UVProjector
  * @param {object} options
@@ -30,9 +28,45 @@ function UVProjector(options)
 
 	THREE.PerspectiveCamera.call(this, fov, aspect, near, far);
 
+	/*var oldProjectionMatrix = new THREE.Matrix4();
+	 var oldMatrixWorld = new THREE.Matrix4();
+
+	 var _this = this;
+
+	 var oldUpdateProjectionMatrix = this.updateProjectionMatrix.bind(this);
+	 this.updateProjectionMatrix = function(){
+
+	 oldUpdateProjectionMatrix();
+
+	 for (var i = 0; i < 16; i++)
+	 {
+	 if (oldProjectionMatrix.elements[i] !== _this.projectionMatrix.elements[i])
+	 {
+	 oldProjectionMatrix.elements[i] = _this.projectionMatrix.elements[i];
+	 _this._changed = true;
+
+	 }
+	 }
+	 };
+
+	 var oldUpdateMatrixWorld = this.updateMatrixWorld.bind(this);
+	 this.updateMatrixWorld = function(){
+
+	 oldUpdateMatrixWorld();
+
+	 for (var i = 0; i < 16; i++)
+	 {
+	 if (oldMatrixWorld.elements[i] !== _this.matrixWorld.elements[i])
+	 {
+	 oldMatrixWorld.elements[i] = _this.matrixWorld.elements[i];
+	 _this._changed = true;
+	 }
+	 }
+	 };*/
+
 	if (debug)
 	{
-		this.debugView = new THREE.CameraHelper(this); 
+		this.debugView = new THREE.CameraHelper(this);
 	}
 }
 
@@ -61,7 +95,7 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 				var index = indices[j];
 				var vert3 = mesh.geometry.vertices[index];
 
-				var vert = new THREE.Vector4(vert3.x, vert3.y, vert3.z, 1.0); 
+				var vert = new THREE.Vector4(vert3.x, vert3.y, vert3.z, 1.0);
 
 				var newVert = vert.clone();
 				newVert.applyMatrix4(finalMatrix);
@@ -71,11 +105,11 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 				newVert.z /= newVert.w;
 
 				// Filter vertices
-				if ( 
+				if (
 					(newVert.x > -1 && newVert.x < 1) &&
 					(newVert.y > -1 && newVert.y < 1) &&
-					(newVert.z > -1 && newVert.z < 1) 
-					)
+					(newVert.z > -1 && newVert.z < 1)
+				)
 				{
 					anyVerticesInside = true;
 					break;
@@ -89,7 +123,7 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 					var index = indices[j];
 					var vert3 = mesh.geometry.vertices[index];
 
-					var newVert = new THREE.Vector4(vert3.x, vert3.y, vert3.z, 1.0); 
+					var newVert = new THREE.Vector4(vert3.x, vert3.y, vert3.z, 1.0);
 
 					//var newVert = vert.clone();
 					newVert.applyMatrix4(finalMatrix);
@@ -100,11 +134,11 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 					newVert.z /= newVert.w;
 
 
-					mesh.geometry.faceVertexUvs[0][i][j] = 
-					new THREE.Vector2(
-						newVert.x * 0.5 + 0.5, 
-						newVert.y * 0.5 + 0.5
-					);
+					mesh.geometry.faceVertexUvs[0][i][j] =
+						new THREE.Vector2(
+							newVert.x * 0.5 + 0.5,
+							newVert.y * 0.5 + 0.5
+						);
 				}
 			}
 		}
@@ -121,17 +155,11 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 		//var uv_floats = uvarray.length;
 		//var uvs = uv_floats / 2;		
 
-		var newVert = new THREE.Vector4(0.0, 0.0, 0.0, 1.0); 
+		var newVert = new THREE.Vector4(0.0, 0.0, 0.0, 1.0);
 		var e = finalMatrix.elements;
 
-		var width = this.width;
-		var height = this.height;
-		var left = this.left;
-		var top = this.top;
-		var flipX = this.flipX;
-
-		for (var index = 0; 
-			 index < vertices; 
+		for (var index = 0;
+			 index < vertices;
 			 index++)
 		{
 			var x = positionarray[index * 3];
@@ -144,7 +172,7 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 			//newVert.x /= newVert.w;
 			//newVert.y /= newVert.w;
 			//newVert.z /= newVert.w;
-			
+
 			var newX = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] * 1.0;
 			var newY = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] * 1.0;
 			var newZ = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] * 1.0;
@@ -153,19 +181,20 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 			newVert.set(newX / newW, newY / newW, newZ / newW, newW);
 
 			// Filter vertices
-			if ( 
-				(newVert.x > -1.1 && newVert.x < 1.1) &&
-				(newVert.y > -1.1 && newVert.y < 1.1) &&
-				(newVert.z > -1 && newVert.z < 1) 
-				)
+			if (
+				(newVert.x > -1.2 && newVert.x < 1.2) &&
+				(newVert.y > -1.2 && newVert.y < 1.2) &&
+				(newVert.z > -1 && newVert.z < 1)
+			)
 			{
 				var u = newVert.x * 0.5 + 0.5;
 				var v = 1 - (newVert.y * 0.5 + 0.5);
 
-				u = u * width + left;
-				v = 1 - (v * height + top);
+				u = u * this.width + this.left;
+				v = 1 - (v * this.height + this.top);
 
-				if (flipX) u = 1-u;
+				if (this.flipX) u = 1-u;
+
 
 				uvarray[index * 2] = u;
 				uvarray[index * 2 + 1] = v;
@@ -173,7 +202,7 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 				decalsMaskArray[index] = 1.0;
 			}
 		}
-		mesh.geometry.attributes.decalsMask.needsUpdate = true;		
+		mesh.geometry.attributes.decalsMask.needsUpdate = true;
 	}
 };
 
@@ -182,8 +211,8 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
  * @param  {THREE.Mesh} meshes
  */
 UVProjector.prototype.updateProjector = function(meshes) {
-    
-    // Compute UVProjector camera's matrices
+
+	// Compute UVProjector camera's matrices
 	this.updateMatrix();
 	this.updateMatrixWorld();
 	this.updateProjectionMatrix();
@@ -197,23 +226,36 @@ UVProjector.prototype.updateProjector = function(meshes) {
 
 	for (var k = 0; k < meshes.length; k++)
 	{
-		var mesh = meshes[k];	
+		var mesh = meshes[k];
 
-		//----------- Modify UV coordinates
-		mesh.updateMatrix();
-		mesh.updateMatrixWorld();
+		if (mesh.decalsDirty)
+		{
+			//----------- Modify UV coordinates
+			mesh.updateMatrix();
+			mesh.updateMatrixWorld();
 
-		mesh.matrixAutoUpdate = true;
+			mesh.matrixAutoUpdate = true;
 
-		var finalMatrix = new THREE.Matrix4();
-		var objWorld = mesh.matrixWorld;
+			var finalMatrix = new THREE.Matrix4();
+			var objWorld = mesh.matrixWorld;
 
-		finalMatrix.multiplyMatrices( projection, viewWorldInverse);
-		finalMatrix.multiplyMatrices( finalMatrix, objWorld);
+			finalMatrix.multiplyMatrices( projection, viewWorldInverse);
+			finalMatrix.multiplyMatrices( finalMatrix, objWorld);
 
-		this.createUVs(mesh, finalMatrix);
-	}	
+			this.createUVs(mesh, finalMatrix);
+		}
+	}
 };
+
+/*UVProjector.prototype.changed = function() {
+
+	if (this._changed)
+	{
+		this._changed = false;
+		return true;
+	}
+	return false;
+}*/
 
 module.exports = UVProjector;
 
