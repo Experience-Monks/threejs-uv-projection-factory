@@ -1,4 +1,4 @@
-var THREE = require('three');
+THREE = require('three');
 
 var materialMatch = require('threejs-helper-material-assigner');
 var View = require('threejs-managed-view').View;
@@ -57,6 +57,7 @@ function addMeshesToFactory()
 {
 	var children = crawlForMeshes();
 	children.forEach(function(mesh) {
+		mesh.material = materials.notFound;
 		factory.addMesh(mesh);
 	});
 }
@@ -76,6 +77,16 @@ function onComplete() {
 	var uvprojector2 = factory.createProjector({debug: true, aspect: texture.image.width / texture.image.height, fov: 10, left: 0.5});
 	uvprojector2.position.set(3, 2, 0);
 	uvprojector2.lookAt(new THREE.Vector3(0,0,0));
+
+	var oldUpdateMatrixWorld = uvprojector2.updateMatrixWorld.bind(uvprojector2);
+	uvprojector2.updateMatrixWorld = function()
+	{
+		oldUpdateMatrixWorld();
+		for (var i in factory.meshes)
+		{
+			factory.meshes[i].decalsDirty = true;
+		}
+	};
 
 	var step = 0.0;
 	var fps = new FPS(view.camera, view.canvas);
