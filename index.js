@@ -57,11 +57,11 @@ UVProjectorFactory.prototype.addMesh = function(mesh){
 
 	if (this.meshes.indexOf(mesh) === -1)
 	{
+		mesh.decalsDirty = true;
+		
 		// Add decalsMask attribute to mesh (if it doesn't exist)
 		if ( mesh.geometry.getAttribute('decalsMask') === undefined)
 		{
-			mesh.decalsDirty = true;
-
 			var num_vertices = mesh.geometry.attributes.position.array.length / 3;
 			var decalsMask = new Float32Array(num_vertices);
 
