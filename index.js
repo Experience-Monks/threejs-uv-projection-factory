@@ -161,7 +161,7 @@ UVProjectorFactory.prototype.update = function(force){
 
 	if(this.debugLevel >= 1) this.log('dirty meshes:', dirtyCount);
 	// Update each UV projector (onto all meshes)
-	for (var j = 0; j < this.uvProjectors.length; j++)
+	for (var j = this.uvProjectors.length - 1; j >= 0; j--)
 	{
 		if(this.debugLevel >= 1) this.log('uvProjecting', j);
 		this.uvProjectors[j].updateProjector(this.meshes);
@@ -169,8 +169,7 @@ UVProjectorFactory.prototype.update = function(force){
 
 	// Set Decals to no longer dirty after running through all UV projectors
 	// so all projectors have a chance to project on dirtied meshes (before resetting flag)
-	for (var j = 0; j < this.meshes.length; j++)
-	{
+	for (var j = 0; j < this.meshes.length; j++){
 		this.meshes[j].decalsDirty = false;
 	}
 };
