@@ -227,8 +227,6 @@ UVProjector.prototype.updateProjector = function(meshes) {
 		if (mesh.decalsDirty)
 		{
 			//----------- Modify UV coordinates
-			deepMatrixUpdate(mesh);
-
 			var finalMatrix = new THREE.Matrix4();
 
 			finalMatrix.multiplyMatrices( projection, this.matrixWorldInverse);
