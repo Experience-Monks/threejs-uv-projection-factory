@@ -1,6 +1,6 @@
 {
   "name": "threejs-uv-projection-factory",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "Dynamic UV projector that uses a camera",
   "main": "index.js",
   "license": "MIT",
