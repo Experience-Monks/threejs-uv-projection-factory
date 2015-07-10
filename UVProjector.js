@@ -215,12 +215,8 @@ UVProjector.prototype.updateProjector = function(meshes) {
 	// Compute UVProjector camera's matrices
 	this.updateMatrix();
 	this.updateMatrixWorld();
+	this.matrixWorldInverse.getInverse( this.matrixWorld );
 	this.updateProjectionMatrix();
-
-	this.matrixAutoUpdate = true;
-
-	var viewWorldInverse = new THREE.Matrix4();
-	viewWorldInverse.getInverse(this.matrixWorld);
 
 	var projection = this.projectionMatrix;
 
@@ -231,16 +227,12 @@ UVProjector.prototype.updateProjector = function(meshes) {
 		if (mesh.decalsDirty)
 		{
 			//----------- Modify UV coordinates
-			mesh.updateMatrix();
-			mesh.updateMatrixWorld();
-
-			mesh.matrixAutoUpdate = true;
+			deepMatrixUpdate(mesh);
 
 			var finalMatrix = new THREE.Matrix4();
-			var objWorld = mesh.matrixWorld;
 
-			finalMatrix.multiplyMatrices( projection, viewWorldInverse);
-			finalMatrix.multiplyMatrices( finalMatrix, objWorld);
+			finalMatrix.multiplyMatrices( projection, this.matrixWorldInverse);
+			finalMatrix.multiplyMatrices( finalMatrix, mesh.matrixWorld);
 
 			this.createUVs(mesh, finalMatrix);
 		}

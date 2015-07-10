@@ -1,14 +1,17 @@
+var deepMatrixUpdate = require('./deepMatrixUpdate');
 var UVProjector = require('./UVProjector.js');
 
 /**
  * Constructor for UVProjectorFactory
  * @param {THREE.Scene} scene
  */
-function UVProjectorFactory(scene)
+function UVProjectorFactory(scene, debugLevel)
 {
 	this.meshes = [];
-	this.uvprojectors = [];
+	this.uvProjectors = [];
 	this.scene = scene;
+	this.debugLevel = debugLevel || 0;
+	this.updatedCount = 0;
 }
 
 /**
@@ -16,9 +19,10 @@ function UVProjectorFactory(scene)
  * @param {THREE.Mesh} mesh
  */
 UVProjectorFactory.prototype.resetUVs = function(mesh){
-
+	deepMatrixUpdate(mesh);
 	if (mesh.geometry.faceVertexUvs !== undefined)
 	{
+		if(this.debugLevel >= 1) this.log('reseting UVs (standard)', mesh.name);
 		var numFaces = mesh.geometry.faces.length;
 
 		for (var j = 0; j < numFaces; j++)
@@ -32,6 +36,7 @@ UVProjectorFactory.prototype.resetUVs = function(mesh){
 	}
 	else if (mesh.geometry.attributes.uv !== undefined)
 	{
+		if(this.debugLevel >= 1) this.log('reseting UVs (special)', mesh.name);
 		var numUVs = mesh.geometry.attributes.uv.array.length;
 		for (var i = 0; i < numUVs ; i++)
 		{
@@ -58,6 +63,7 @@ UVProjectorFactory.prototype.addMesh = function(mesh){
 	if (this.meshes.indexOf(mesh) === -1)
 	{
 		mesh.decalsDirty = true;
+		if(this.debugLevel >= 1) this.log('adding mesh', mesh.name);
 		
 		// Add decalsMask attribute to mesh (if it doesn't exist)
 		if ( mesh.geometry.getAttribute('decalsMask') === undefined)
@@ -88,6 +94,7 @@ UVProjectorFactory.prototype.removeMesh = function(mesh){
 	if (index > -1)
 	{
 		this.meshes.splice(index, 1);
+		if(this.debugLevel >= 1) this.log('removing mesh', mesh.name);
 	}
 };
 
@@ -97,56 +104,67 @@ UVProjectorFactory.prototype.removeMesh = function(mesh){
  */
 UVProjectorFactory.prototype.createProjector = function(options){
 
-	var uvprojector = new UVProjector(options);
-	this.uvprojectors.push(uvprojector);
+	var uvProjector = new UVProjector(options);
+	this.uvProjectors.push(uvProjector);
 
-	this.scene.add(uvprojector);
+	this.scene.add(uvProjector);
+
+	if(this.debugLevel >= 1) this.log('creating projector', options);
 
 	if (options.debug)
-		this.scene.add(uvprojector.debugView);
+		this.scene.add(uvProjector.debugView);
 
-	return uvprojector;
+	return uvProjector;
 };
 
 /**
  * Remove UVProjector from list of projectors
- * @param  {UVProjector} uvprojector
+ * @param  {UVProjector} uvProjector
  */
-UVProjectorFactory.prototype.destroyProjector = function(uvprojector){
+UVProjectorFactory.prototype.destroyProjector = function(uvProjector){
 
-	var index = this.uvprojectors.indexOf(uvprojector);
+	var index = this.uvProjectors.indexOf(uvProjector);
 	if (index > -1)
 	{
-		this.uvprojectors.splice(index, 1);
+		if(this.debugLevel >= 1) this.log('destroying projector');
+		this.uvProjectors.splice(index, 1);
+		this.scene.remove(uvProjector.debugView);
+		this.scene.remove(uvProjector);
 	}
-	this.scene.remove(uvprojector.debugView);
-	this.scene.remove(uvprojector);
 };
 
 /**
  * Update all UVProjectors' UVs on meshes
  */
-UVProjectorFactory.prototype.update = function(){
+UVProjectorFactory.prototype.update = function(force){
 
 	/*var anyProjectorsChanged = false;
 
-	for (var j = 0; j < this.uvprojectors.length; j++) {
-		anyProjectorsChanged = this.uvprojectors[j].changed() || anyProjectorsChanged;
+	for (var j = 0; j < this.uvProjectors.length; j++) {
+		anyProjectorsChanged = this.uvProjectors[j].changed() || anyProjectorsChanged;
 	}*/
 
+	this.updatedCount++;
+	if(this.updatedCount >= 28) debugMatrices = true;
+	if(this.debugLevel >= 1) this.log('update counter:', this.updatedCount);
+	if(this.debugLevel >= 1) this.log('meshes:', this.meshes.length);
+	if(this.debugLevel >= 1) this.log('uvProjectors:', this.uvProjectors.length);
 	// Reset all UVs for all meshes before updating
-	for (var i = 0; i < this.meshes.length; i++)
-	{
-		if (this.meshes[i].decalsDirty)
-		{
+	var dirtyCount = 0;
+	for (var i = 0; i < this.meshes.length; i++){
+		if(force) this.meshes[i].decalsDirty = true;
+		if (this.meshes[i].decalsDirty){
+			dirtyCount++;
 			this.resetUVs(this.meshes[i]);
 		}
 	}
 
+	if(this.debugLevel >= 1) this.log('dirty meshes:', dirtyCount);
 	// Update each UV projector (onto all meshes)
-	for (var j = 0; j < this.uvprojectors.length; j++)
+	for (var j = 0; j < this.uvProjectors.length; j++)
 	{
-		this.uvprojectors[j].updateProjector(this.meshes);
+		if(this.debugLevel >= 1) this.log('uvProjecting', j);
+		this.uvProjectors[j].updateProjector(this.meshes);
 	}
 
 	// Set Decals to no longer dirty after running through all UV projectors
@@ -156,6 +174,12 @@ UVProjectorFactory.prototype.update = function(){
 		this.meshes[j].decalsDirty = false;
 	}
 };
+
+UVProjectorFactory.prototype.log = function() {
+	var args = Array.prototype.slice.call(arguments);
+	args.unshift('UV Projector Factory:');
+	console.log.apply(console, args);
+}
 
 module.exports = UVProjectorFactory;
 
