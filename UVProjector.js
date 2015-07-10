@@ -2,6 +2,9 @@
  * Constructor for UVProjector
  * @param {object} options
  */
+
+var skipped = 0;
+var processed = 0;
 function UVProjector(options)
 {
 	options = options || {};
@@ -162,6 +165,12 @@ UVProjector.prototype.createUVs = function(mesh, finalMatrix) {
 			 index < vertices;
 			 index++)
 		{
+			if(decalsMaskArray[index]) {
+				skipped++;
+				continue;
+			} else {
+				processed++;
+			}
 			var x = positionarray[index * 3];
 			var y = positionarray[index * 3 + 1];
 			var z = positionarray[index * 3 + 2];
@@ -235,6 +244,8 @@ UVProjector.prototype.updateProjector = function(meshes) {
 			this.createUVs(mesh, finalMatrix);
 		}
 	}
+
+	// console.log('UV Pro: processed:', processed, 'skipped:', skipped);
 };
 
 /*UVProjector.prototype.changed = function() {
