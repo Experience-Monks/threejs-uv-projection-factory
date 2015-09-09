@@ -128,7 +128,7 @@ UVProjectorFactory.prototype.destroyProjector = function(uvProjector){
 	{
 		if(this.debugLevel >= 1) this.log('destroying projector');
 		this.uvProjectors.splice(index, 1);
-		this.scene.remove(uvProjector.debugView);
+		if(uvProjector.debugView) this.scene.remove(uvProjector.debugView);
 		this.scene.remove(uvProjector);
 	}
 };
